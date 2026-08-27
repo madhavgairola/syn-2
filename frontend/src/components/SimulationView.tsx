@@ -97,21 +97,6 @@ const getSpritePosition = (index: number) => {
   };
 };
 
-const THINKING_PHRASES = [
-  "Hmm interesting...",
-  "Let me think...",
-  "I have concerns",
-  "This could work!",
-  "What about pricing?",
-  "Who else does this?",
-  "I'd try it...",
-  "Not convinced yet",
-  "Tell me more...",
-  "Sounds risky...",
-  "I like this idea",
-  "Need more data...",
-];
-
 const SpeechBubble: React.FC<{ text: string, emoji?: string, isDone: boolean, position: 'top' | 'bottom' }> = ({ text, emoji, isDone, position }) => {
   return (
     <motion.div

@@ -1,10 +1,10 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import type { Report, Persona, Simulation, RedTeamReport, Competitor, CommunityRecommendation, VersionSnapshot } from '../services/api';
 import { 
-  PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, CartesianGrid, ScatterChart, Scatter, ZAxis
+  PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, CartesianGrid
 } from 'recharts';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, ArrowLeft, ArrowDown, CheckCircle2, MessageCircle, FileText, Wand2, Loader2, X, Users, ShieldAlert, Target, History, ChevronRight, Activity, TrendingUp, TrendingDown, BookOpen, MessageSquareQuote, ThumbsUp, AlertOctagon, Shield, HelpCircle, AlertTriangle, Crosshair, Building, MapPin, Settings2, ChevronUp, ChevronDown, Plus, Minus, ExternalLink, Swords, Flag } from 'lucide-react';
+import { ArrowRight, ArrowLeft, ArrowDown, CheckCircle2, MessageCircle, FileText, Wand2, Loader2, X, Users, ShieldAlert, Target, History, ChevronRight, Activity, TrendingUp, TrendingDown, BookOpen, MessageSquareQuote, ThumbsUp, AlertOctagon, Shield, HelpCircle, AlertTriangle, Crosshair, Building, MapPin, Settings2, ChevronUp, ChevronDown, Plus, Minus, ExternalLink, Swords } from 'lucide-react';
 import { ChatDrawer } from './ChatDrawer';
 import { generateAsset, pivotIdea, sendChatMessage, summarizeChat, generateDraft, saveDebate } from '../services/api';
 import ReactMarkdown from 'react-markdown';
@@ -41,7 +41,7 @@ export const ReportDashboard: React.FC<ReportDashboardProps> = ({
   onReanalyzeWithPriority,
   onUpdateSimulations
 }) => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'audience' | 'redteam' | 'competitors' | 'validation' | 'brainstorm' | 'versions' | 'simulate'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'audience' | 'redteam' | 'competitors' | 'validate' | 'validation' | 'brainstorm' | 'versions' | 'simulate' | 'debate'>('overview');
   
   const [isGeneratingRedTeam, setIsGeneratingRedTeam] = useState(false);
   const [isPriorityModalOpen, setIsPriorityModalOpen] = useState(false);
@@ -50,7 +50,7 @@ export const ReportDashboard: React.FC<ReportDashboardProps> = ({
   // Initialize segment priority from analysis if not set
   useEffect(() => {
     if (analysis?.audienceComposition && segmentPriority.length === 0) {
-      setSegmentPriority(analysis.audienceComposition.map(s => s.name));
+      setSegmentPriority(analysis.audienceComposition.map((s: { name: string }) => s.name));
     }
   }, [analysis]);
 
@@ -120,7 +120,6 @@ export const ReportDashboard: React.FC<ReportDashboardProps> = ({
   };
 
   const [selectedPersonaId, setSelectedPersonaId] = useState<string | null>(null);
-  const [competitorFilter, setCompetitorFilter] = useState('All');
   const [expandedCompetitor, setExpandedCompetitor] = useState<string | null>(null);
 
   // Asset Generation State
@@ -356,7 +355,6 @@ export const ReportDashboard: React.FC<ReportDashboardProps> = ({
     const printWindow = window.open('', '', 'height=800,width=800');
     if (!printWindow) return;
     
-    const reportContent = document.getElementById('hidden-report-content');
     const dateStr = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
     
     printWindow.document.write('<html><head><title>Synthetic R&D Report</title>');
@@ -509,31 +507,6 @@ export const ReportDashboard: React.FC<ReportDashboardProps> = ({
   ];
   const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#8b5cf6', '#ec4899', '#f43f5e'];
 
-  const hypeUtilityStats = useMemo(() => {
-    if (!report?.insights?.segmentBreakdown?.length) return { hype: 50, utility: 50, rawHype: 0, rawUtility: 0 };
-    
-    let totalExcitement = 0;
-    let totalInterest = 0;
-    report.insights.segmentBreakdown.forEach(s => {
-      totalExcitement += (s.avgExcitement || 0);
-      totalInterest += (s.avgInterest || 0);
-    });
-    
-    const segments = report.insights.segmentBreakdown.length;
-    const avgEx = (totalExcitement / segments) * 10;
-    const avgIn = (totalInterest / segments) * 10;
-    
-    const total = avgEx + avgIn;
-    if (total === 0) return { hype: 50, utility: 50, rawHype: 0, rawUtility: 0 };
-    
-    return {
-      hype: Math.round((avgEx / total) * 100),
-      utility: Math.round((avgIn / total) * 100),
-      rawHype: Math.round(avgEx),
-      rawUtility: Math.round(avgIn)
-    };
-  }, [report]);
-
   const getRiskColor = (level?: string) => {
     switch(level?.toLowerCase()) {
       case 'critical': return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 border-red-200 dark:border-red-800';
@@ -596,7 +569,7 @@ export const ReportDashboard: React.FC<ReportDashboardProps> = ({
             <div className="flex flex-wrap gap-2 pt-2">
               <span className="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 flex items-center mr-1">R&D Settings:</span>
               <span className="px-2.5 py-1 bg-gray-100 dark:bg-[#1a1a1a] text-gray-700 dark:text-gray-300 rounded-md text-xs font-medium border border-gray-200 dark:border-[#333]">
-                {analysis?.config?.lens ? `Lens: ${Array.isArray(analysis.config.lens) ? analysis.config.lens.map(l => l.replace('_', ' ').toUpperCase()).join(' & ') : (analysis.config.lens as string).replace('_', ' ').toUpperCase()}` : 'Lens: MARKET FIT'}
+                {analysis?.config?.lens ? `Lens: ${Array.isArray(analysis.config.lens) ? analysis.config.lens.map((l: string) => l.replace('_', ' ').toUpperCase()).join(' & ') : (analysis.config.lens as string).replace('_', ' ').toUpperCase()}` : 'Lens: MARKET FIT'}
               </span>
               <span className="px-2.5 py-1 bg-gray-100 dark:bg-[#1a1a1a] text-gray-700 dark:text-gray-300 rounded-md text-xs font-medium border border-gray-200 dark:border-[#333]">
                 {analysis?.config?.depth ? `Depth: ${analysis.config.depth.toUpperCase()}` : 'Depth: STANDARD'}

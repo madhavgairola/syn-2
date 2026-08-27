@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { SimulationView } from './components/SimulationView';
 import type { Persona, Simulation } from './services/api';
 

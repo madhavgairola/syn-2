@@ -124,12 +124,11 @@ function App() {
       setActiveConfig(config);
       setAppState('simulation');
       
-      const ideaId = analysis.ideaId; // Wait, analysis in frontend might not have ideaId directly on the object.
       const currentIdeaId = report?.ideaId;
       if (!currentIdeaId) throw new Error("No idea ID found");
 
       // Step 2: Regenerate Report (insights, math, bias)
-      setSimStatus('reporting');
+      setSimStatus('done');
       const reportResult = await generateReport(currentIdeaId, config);
       setReport(reportResult.report);
       
@@ -150,7 +149,7 @@ function App() {
 
   const handleClarificationSubmit = (answers: string) => {
     const combinedIdea = `${originalIdea}\n\nAdditional Context Provided by User:\n${answers}`;
-    startSimulationProcess(combinedIdea, true);
+    startSimulationProcess(combinedIdea, activeConfig, true);
   };
 
   const handleLoadHistory = async (ideaId: string) => {

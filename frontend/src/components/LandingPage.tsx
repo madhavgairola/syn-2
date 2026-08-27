@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Sparkles, LayoutDashboard, Users, FileText, ChevronDown, Clock, PanelLeftClose, PanelLeftOpen, History, Settings, Target, Banknote, Rocket, ShieldAlert, BookOpen, MessageSquareQuote } from 'lucide-react';
+import { ArrowRight, Sparkles, LayoutDashboard, Users, FileText, ChevronDown, PanelLeftClose, PanelLeftOpen, History, Settings, Target, Banknote, Rocket, ShieldAlert, BookOpen, MessageSquareQuote } from 'lucide-react';
 import { fetchHistory, type SimulationConfig, DEFAULT_CONFIG } from '../services/api';
 
 interface LandingPageProps {
